@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '/public')));
 
 // Login
-app.use(session({ secret: 'djalehfbcirfhjkparqmfjapty762bsgs9' }));
+app.use(session({ secret: process.env.clientSecret }));
 app.use(passport.initialize());
 app.use(passport.session());
 
