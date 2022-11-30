@@ -2,7 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const hbs = require('express-handlebars');
-
+const passportConfig = require('./config/passport');
+const session = require("express-session");
+const passport = require("passport");
+//const session = require('express-session');
 const app = express();
 
 app.engine('hbs', hbs({ extname: 'hbs', layoutsDir: './layouts', defaultLayout: 'main' }));
@@ -13,17 +16,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '/public')));
 
+// Login
+app.use(session({ secret: 'djalehfbcirfhjkparqmfjapty762bsgs9' }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Paths
 app.get('/', (req, res) => {
   res.render('index');
 });
 
-app.get('/user/logged', (req, res) => {
-  res.render('logged');
-});
-
-app.get('/user/no-permission', (req, res) => {
-  res.render('noPermission');
-});
+app.use('/auth', require('./routes/auth.routes'));
+app.use('/user', require('./routes/user.routes'));
 
 app.use('/', (req, res) => {
   res.status(404).render('notFound');
